@@ -1,0 +1,170 @@
+{% extends "index.html" %}
+
+{% block title %}FinData - Transacciones{% endblock %}
+
+{% block content %}
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Transacciones</h1>
+</div>
+
+<!-- Filtros -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">
+            <i class="fas fa-filter"></i> Filtros
+        </h6>
+    </div>
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('transactions') }}">
+            <div class="row">
+                <!-- Filtro por Tipo -->
+                <div class="col-md-3 mb-3">
+                    <label for="filterType" class="form-label">Tipo</label>
+                    <select class="form-control" id="filterType" name="type">
+                        <option value="">Todos</option>
+                        <option value="income" {% if request.args.get('type') == 'income' %}selected{% endif %}>Ingreso</option>
+                        <option value="expense" {% if request.args.get('type') == 'expense' %}selected{% endif %}>Gasto</option>
+                    </select>
+                </div>
+
+                <!-- Filtro por Categoría -->
+                <div class="col-md-3 mb-3">
+                    <label for="filterCategory" class="form-label">Categoría</label>
+                    <select class="form-control" id="filterCategory" name="category">
+                        <option value="">Todas</option>
+                        <option value="Alimentación" {% if request.args.get('category') == 'Alimentación' %}selected{% endif %}>Alimentación</option>
+                        <option value="Transporte" {% if request.args.get('category') == 'Transporte' %}selected{% endif %}>Transporte</option>
+                        <option value="Vivienda" {% if request.args.get('category') == 'Vivienda' %}selected{% endif %}>Vivienda</option>
+                        <option value="Ocio" {% if request.args.get('category') == 'Ocio' %}selected{% endif %}>Ocio</option>
+                        <option value="Educación" {% if request.args.get('category') == 'Educación' %}selected{% endif %}>Educación</option>
+                        <option value="Salud" {% if request.args.get('category') == 'Salud' %}selected{% endif %}>Salud</option>
+                        <option value="Ropa" {% if request.args.get('category') == 'Ropa' %}selected{% endif %}>Ropa</option>
+                        <option value="Servicios" {% if request.args.get('category') == 'Servicios' %}selected{% endif %}>Servicios</option>
+                        <option value="Mascotas" {% if request.args.get('category') == 'Mascotas' %}selected{% endif %}>Mascotas</option>
+                        <option value="Otros" {% if request.args.get('category') == 'Otros' %}selected{% endif %}>Otros</option>
+                    </select>
+                </div>
+
+                <!-- Filtro por Fecha Desde -->
+                <div class="col-md-2 mb-3">
+                    <label for="filterDateFrom" class="form-label">Desde</label>
+                    <input type="date" class="form-control" id="filterDateFrom" name="date_from" value="{{ request.args.get('date_from', '') }}">
+                </div>
+
+                <!-- Filtro por Fecha Hasta -->
+                <div class="col-md-2 mb-3">
+                    <label for="filterDateTo" class="form-label">Hasta</label>
+                    <input type="date" class="form-control" id="filterDateTo" name="date_to" value="{{ request.args.get('date_to', '') }}">
+                </div>
+
+                <!-- Botones -->
+                <div class="col-md-2 mb-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-search"></i> Filtrar
+                    </button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <a href="{{ url_for('transactions') }}" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-times"></i> Limpiar Filtros
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Tabla de Transacciones -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">
+            <i class="fas fa-table"></i> Historial Completo de Transacciones
+        </h6>
+    </div>
+    <div class="card-body">
+        {% if transactions %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Tipo</th>
+                        <th>Cantidad</th>
+                        <th>Categoría</th>
+                        <th>Descripción</th>
+                    </tr>
+                </thead>
+                <tfoot class="thead-light">
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Tipo</th>
+                        <th>Cantidad</th>
+                        <th>Categoría</th>
+                        <th>Descripción</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    {% for transaction in transactions %}
+                    <tr>
+                        <td>{{ transaction.date.strftime('%d/%m/%Y') }}</td>
+                        <td>
+                            {% if transaction.type == 'income' %}
+                                <span class="badge badge-success">
+                                    <i class="fas fa-arrow-up"></i> Ingreso
+                                </span>
+                            {% else %}
+                                <span class="badge badge-danger">
+                                    <i class="fas fa-arrow-down"></i> Gasto
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="{% if transaction.type == 'income' %}text-success{% else %}text-danger{% endif %} font-weight-bold">
+                            {% if transaction.type == 'income' %}+{% else %}-{% endif %}{{ "%.2f"|format(transaction.amount) }}€
+                        </td>
+                        <td>
+                            {% if transaction.category %}
+                                <span class="badge badge-info">{{ transaction.category }}</span>
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ transaction.description if transaction.description else '-' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info text-center" role="alert">
+            <i class="fas fa-info-circle fa-2x mb-3"></i>
+            <h5>No hay transacciones registradas</h5>
+            <p class="mb-0">Comienza añadiendo tus primeros <a href="{{ url_for('incomes') }}">ingresos</a> o <a href="{{ url_for('expenses') }}">gastos</a>.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Scripts específicos para DataTables -->
+<script src="{{ url_for('static', filename='vendor/datatables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+
+<script>
+    // Inicializar DataTables con configuración en español
+    $(document).ready(function() {
+        $('#dataTable').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"
+            },
+            "order": [[0, "desc"]], // Ordenar por fecha descendente por defecto
+            "pageLength": 25,
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "Todos"]]
+        });
+    });
+</script>
+
+<!-- CSS adicional para DataTables -->
+<link href="{{ url_for('static', filename='vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+
+{% endblock %}
