@@ -71,26 +71,32 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Tasa de Ahorro</div>
+                            Tasa de Ahorro {{ current_year }}</div>
                         <div class="row no-gutters align-items-center">
                             <div class="col-auto">
                                 <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
-                                    {% if total_incomes > 0 %}
-                                        {{ "%.1f"|format((balance / total_incomes) * 100) }}%
-                                    {% else %}
-                                        0%
-                                    {% endif %}
+                                    {{ "%.1f"|format(saving_rate_current) }}%
                                 </div>
                             </div>
                             <div class="col">
                                 <div class="progress progress-sm mr-2">
-                                    <div class="progress-bar bg-primary" role="progressbar"
-                                        style="width: {% if total_incomes > 0 %}{{ (balance / total_incomes) * 100 }}{% else %}0{% endif %}%"
-                                        aria-valuenow="{% if total_incomes > 0 %}{{ (balance / total_incomes) * 100 }}{% else %}0{% endif %}"
-                                        aria-valuemin="0" aria-valuemax="100"></div>
+                                    <div class="progress-bar {% if saving_rate_current >= 0 %}bg-primary{% else %}bg-danger{% endif %}" 
+                                        role="progressbar"
+                                        style="width: {{ saving_rate_current|abs }}%"
+                                        aria-valuenow="{{ saving_rate_current|abs }}"
+                                        aria-valuemin="0" 
+                                        aria-valuemax="100"></div>
                                 </div>
                             </div>
                         </div>
+                        {% if saving_rate_previous != 0 %}
+                        <div class="text-xs mt-2">
+                            <span class="{% if saving_rate_diff >= 0 %}text-success{% else %}text-danger{% endif %}">
+                                <i class="fas fa-arrow-{% if saving_rate_diff >= 0 %}up{% else %}down{% endif %}"></i>
+                                {{ "%.1f"|format(saving_rate_diff|abs) }}% vs {{ current_year - 1 }}
+                            </span>
+                        </div>
+                        {% endif %}
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-piggy-bank fa-2x text-gray-300"></i>
@@ -138,7 +144,26 @@
                         <i class="fas fa-circle text-success"></i> Transporte
                     </span>
                     <span class="mr-2">
-                        <i class="fas fa-circle text-info"></i> Otros
+                        <i class="fas fa-circle text-info"></i> Vivienda
+                    </span>
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-warning"></i> Ocio
+                    </span>
+                    <br>
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-danger"></i> Salud
+                    </span>
+                    <span class="mr-2">
+                        <i class="fas fa-circle" style="color: #858796;"></i> Ropa
+                    </span>
+                    <span class="mr-2">
+                        <i class="fas fa-circle" style="color: #5a5c69;"></i> Servicios
+                    </span>
+                    <span class="mr-2">
+                        <i class="fas fa-circle" style="color: #2e59d9;"></i> Mascotas
+                    </span>
+                    <span class="mr-2">
+                        <i class="fas fa-circle" style="color: #17a673;"></i> Otros
                     </span>
                 </div>
             </div>
@@ -147,5 +172,16 @@
 
 </div>
 <!-- End Content Row -->
+
+<!-- Script para pasar datos a JavaScript -->
+<script>
+    // Datos para gráfico de área
+    window.chartData = {
+        monthlyIncomes: {{ monthly_incomes | tojson }},
+        monthlyExpenses: {{ monthly_expenses | tojson }},
+        categoryLabels: {{ category_labels | tojson }},
+        categoryAmounts: {{ category_amounts | tojson }}
+    };
+</script>
 
 {% endblock %}
