@@ -269,7 +269,8 @@ Las contribuciones son bienvenidas. Por favor:
 ## 📸 Capturas de Pantalla
 
 ### Dashboard
-<img width="1889" height="873" alt="findata_dashboard" src="https://github.com/user-attachments/assets/ec54591b-dd12-4c03-b72b-9eb3767e642e" />
+<img width="1897" height="865" alt="findata_dashboard" src="https://github.com/user-attachments/assets/b1e44b42-1d91-4b73-9018-10ea7ce21ebe" />
+
 
 ### Gestión de Gastos
 <img width="1865" height="874" alt="findata_gastos" src="https://github.com/user-attachments/assets/5e1004b2-ede8-4ca9-8154-ef71d210206e" />
