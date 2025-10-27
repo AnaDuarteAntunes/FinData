@@ -1,0 +1,197 @@
+{% extends "index.html" %}
+{% block title %}Análisis - FinData{% endblock %}
+{% block content %}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Análisis Financiero {{ current_year }}</h1>
+    <div>
+        <a href="{{ url_for('expenses') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Volver
+        </a>
+    </div>
+</div>
+
+<!-- Tarjetas de Tendencias (últimos 6 meses) -->
+<div class="row mb-4">
+    <div class="col-xl-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-chart-line"></i> Tendencias (Últimos {{ trends.meses_analizados }} meses)
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <!-- Promedio Ingresos -->
+                    <div class="col-xl-3 col-md-6 mb-3">
+                        <div class="card border-left-success shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                            Promedio Ingresos/Mes</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                            {{ "%.2f"|format(trends.promedio_ingresos) }}€
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-coins fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Promedio Gastos -->
+                    <div class="col-xl-3 col-md-6 mb-3">
+                        <div class="card border-left-danger shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                            Promedio Gastos/Mes</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                            {{ "%.2f"|format(trends.promedio_gastos) }}€
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-money-bill-wave fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Promedio Balance -->
+                    <div class="col-xl-3 col-md-6 mb-3">
+                        <div class="card border-left-{% if trends.promedio_balance >= 0 %}info{% else %}warning{% endif %} shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-{% if trends.promedio_balance >= 0 %}info{% else %}warning{% endif %} text-uppercase mb-1">
+                                            Promedio Balance/Mes</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                            {{ "%.2f"|format(trends.promedio_balance) }}€
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-balance-scale fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Categoría más gastada -->
+                    <div class="col-xl-3 col-md-6 mb-3">
+                        <div class="card border-left-primary shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                            Categoría Top</div>
+                                        <div class="h6 mb-0 font-weight-bold text-gray-800">
+                                            {{ trends.categoria_mas_gastada }}
+                                        </div>
+                                        <div class="text-xs text-gray-600">
+                                            {{ "%.2f"|format(trends.total_categoria_mas_gastada) }}€
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-crown fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Content Row - Tablas -->
+<div class="row">
+    
+    <!-- Resumen Mensual -->
+    <div class="col-xl-7 col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-calendar-alt"></i> Resumen Mensual {{ current_year }}
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    {{ monthly_table|safe }}
+                </div>
+                <hr>
+                <div class="text-center">
+                    <a href="{{ url_for('analytics') }}" class="btn btn-info btn-sm">
+                        <i class="fas fa-sync-alt"></i> Actualizar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gastos por Categoría -->
+    <div class="col-xl-5 col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-tags"></i> Gastos por Categoría {{ current_year }}
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    {{ category_table|safe }}
+                </div>
+                <hr>
+                <div class="text-center small text-muted">
+                    <i class="fas fa-info-circle"></i> Ordenado de mayor a menor gasto
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Botones de Exportación -->
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-download"></i> Exportar Datos
+                </h6>
+            </div>
+            <div class="card-body text-center">
+                <p class="text-gray-600 mb-4">Descarga tus transacciones en diferentes formatos</p>
+                
+                <!-- Botón CSV -->
+                <a href="{{ url_for('export_csv') }}" class="btn btn-success btn-icon-split mr-3 mb-2">
+                    <span class="icon text-white-50">
+                        <i class="fas fa-file-csv"></i>
+                    </span>
+                    <span class="text">Exportar CSV</span>
+                </a>
+                
+                <!-- Botón Excel (deshabilitado por ahora) -->
+                <a href="{{ url_for('export_excel') }}" class="btn btn-primary btn-icon-split mb-2">
+                    <span class="icon text-white-50">
+                        <i class="fas fa-file-excel"></i>
+                    </span>
+                    <span class="text">Exportar Excel</span>
+                </a>
+                
+                <div class="text-muted small mt-3">
+                    <i class="fas fa-info-circle"></i> CSV disponible - Excel próximamente
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

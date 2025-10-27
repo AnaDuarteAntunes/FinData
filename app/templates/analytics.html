@@ -1,0 +1,280 @@
+{% extends "index.html" %}
+{% block title %}Análisis - FinData{% endblock %}
+{% block content %}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Análisis Financiero {{ current_year }}</h1>
+    <div>
+        <a href="{{ url_for('expenses') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Volver
+        </a>
+    </div>
+</div>
+
+<!-- Tarjetas de Tendencias (últimos 6 meses) -->
+<div class="row mb-4">
+    <div class="col-xl-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-chart-line"></i> Tendencias (Últimos {{ trends.meses_analizados }} meses)
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <!-- Promedio Ingresos -->
+                    <div class="col-xl-3 col-md-6 mb-3">
+                        <div class="card border-left-success shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                            Promedio Ingresos/Mes</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                            {{ "%.2f"|format(trends.promedio_ingresos) }}€
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-coins fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Promedio Gastos -->
+                    <div class="col-xl-3 col-md-6 mb-3">
+                        <div class="card border-left-danger shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                            Promedio Gastos/Mes</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                            {{ "%.2f"|format(trends.promedio_gastos) }}€
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-money-bill-wave fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Promedio Balance -->
+                    <div class="col-xl-3 col-md-6 mb-3">
+                        <div class="card border-left-{% if trends.promedio_balance >= 0 %}info{% else %}warning{% endif %} shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-{% if trends.promedio_balance >= 0 %}info{% else %}warning{% endif %} text-uppercase mb-1">
+                                            Promedio Balance/Mes</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                            {{ "%.2f"|format(trends.promedio_balance) }}€
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-balance-scale fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Categoría más gastada -->
+                    <div class="col-xl-3 col-md-6 mb-3">
+                        <div class="card border-left-primary shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                            Categoría Top</div>
+                                        <div class="h6 mb-0 font-weight-bold text-gray-800">
+                                            {{ trends.categoria_mas_gastada }}
+                                        </div>
+                                        <div class="text-xs text-gray-600">
+                                            {{ "%.2f"|format(trends.total_categoria_mas_gastada) }}€
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-crown fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Content Row - Tablas -->
+<div class="row">
+    
+    <!-- Resumen Mensual -->
+    <div class="col-xl-7 col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-calendar-alt"></i> Resumen Mensual {{ current_year }}
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    {{ monthly_table|safe }}
+                </div>
+                <hr>
+                <div class="text-center">
+                    <a href="{{ url_for('analytics') }}" class="btn btn-info btn-sm">
+                        <i class="fas fa-sync-alt"></i> Actualizar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gastos por Categoría -->
+    <div class="col-xl-5 col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-tags"></i> Gastos por Categoría {{ current_year }}
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    {{ category_table|safe }}
+                </div>
+                <hr>
+                <div class="text-center small text-muted">
+                    <i class="fas fa-info-circle"></i> Ordenado de mayor a menor gasto
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Botones de Exportación con Filtros -->
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-download"></i> Exportar Datos
+                </h6>
+            </div>
+            <div class="card-body">
+                <p class="text-gray-600 mb-4">Descarga tus transacciones aplicando filtros opcionales</p>
+                
+                <!-- Formulario de Filtros -->
+                <form id="exportForm" class="mb-4">
+                    <div class="row">
+                        <!-- Tipo -->
+                        <div class="col-md-3 mb-3">
+                            <label for="filterType" class="form-label small font-weight-bold">Tipo</label>
+                            <select class="form-control form-control-sm" id="filterType" name="type">
+                                <option value="">Todos</option>
+                                <option value="income">Ingresos</option>
+                                <option value="expense">Gastos</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Categoría -->
+                        <div class="col-md-3 mb-3">
+                            <label for="filterCategory" class="form-label small font-weight-bold">Categoría</label>
+                            <select class="form-control form-control-sm" id="filterCategory" name="category">
+                                <option value="">Todas</option>
+                                <option value="Alimentación">Alimentación</option>
+                                <option value="Transporte">Transporte</option>
+                                <option value="Vivienda">Vivienda</option>
+                                <option value="Ocio">Ocio</option>
+                                <option value="Salud">Salud</option>
+                                <option value="Ropa">Ropa</option>
+                                <option value="Servicios">Servicios</option>
+                                <option value="Mascotas">Mascotas</option>
+                                <option value="Otros">Otros</option>
+                                <option value="General">General</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Fecha Desde -->
+                        <div class="col-md-3 mb-3">
+                            <label for="filterDateFrom" class="form-label small font-weight-bold">Desde</label>
+                            <input type="date" class="form-control form-control-sm" id="filterDateFrom" name="date_from">
+                        </div>
+                        
+                        <!-- Fecha Hasta -->
+                        <div class="col-md-3 mb-3">
+                            <label for="filterDateTo" class="form-label small font-weight-bold">Hasta</label>
+                            <input type="date" class="form-control form-control-sm" id="filterDateTo" name="date_to">
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button type="button" class="btn btn-secondary btn-sm mr-2" onclick="clearFilters()">
+                            <i class="fas fa-eraser"></i> Limpiar Filtros
+                        </button>
+                    </div>
+                </form>
+                
+                <hr>
+                
+                <!-- Botones de Descarga -->
+                <div class="text-center">
+                    <button type="button" class="btn btn-success btn-icon-split mr-3 mb-2" onclick="exportData('csv')">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-file-csv"></i>
+                        </span>
+                        <span class="text">Exportar CSV</span>
+                    </button>
+                    
+                    <button type="button" class="btn btn-primary btn-icon-split mb-2" onclick="exportData('excel')">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-file-excel"></i>
+                        </span>
+                        <span class="text">Exportar Excel</span>
+                    </button>
+                </div>
+                
+                <div class="text-muted small mt-3">
+                    <i class="fas fa-info-circle"></i> Los filtros son opcionales. Deja vacío para exportar todo.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script para manejar exportaciones con filtros -->
+<script>
+function exportData(format) {
+    const form = document.getElementById('exportForm');
+    const formData = new FormData(form);
+    
+    // Construir URL con parámetros
+    let url = format === 'csv' ? '{{ url_for("export_csv") }}' : '{{ url_for("export_excel") }}';
+    const params = new URLSearchParams();
+    
+    for (let [key, value] of formData.entries()) {
+        if (value) {  // Solo añadir si tiene valor
+            params.append(key, value);
+        }
+    }
+    
+    if (params.toString()) {
+        url += '?' + params.toString();
+    }
+    
+    // Redirigir para descargar
+    window.location.href = url;
+}
+
+function clearFilters() {
+    document.getElementById('exportForm').reset();
+}
+</script>
+
+{% endblock %}

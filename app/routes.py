@@ -1,5 +1,5 @@
 # routes.py
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash, request, send_file, make_response
 from . import db, bcrypt
 from .models import User, Transaction
 from flask_login import login_user, logout_user, login_required, current_user
@@ -7,6 +7,9 @@ from .forms import RegistrationForm, LoginForm, TransactionForm
 from datetime import datetime
 from sqlalchemy import extract, func
 from datetime import datetime
+from io import BytesIO, StringIO
+import pandas as pd
+import csv
 
 def init_routes(app):
     @app.route('/')
@@ -265,3 +268,163 @@ def init_routes(app):
         transactions = query.order_by(Transaction.date.desc()).all()
         
         return render_template('transactions.html', transactions=transactions)
+    
+    @app.route('/analytics')
+    @login_required
+    def analytics():
+        from .analysis import get_monthly_summary, get_category_breakdown, calculate_trends
+        from datetime import datetime
+        
+        current_year = datetime.now().year
+        
+        # Obtener análisis
+        monthly_summary = get_monthly_summary(current_user.id, current_year)
+        category_breakdown = get_category_breakdown(current_user.id, current_year)
+        trends = calculate_trends(current_user.id, months=6)
+        
+        # Convertir DataFrames a HTML (con clases Bootstrap)
+        monthly_table = monthly_summary.to_html(
+            classes='table table-bordered table-hover table-sm',
+            index=False,
+            border=0
+        )
+        
+        category_table = category_breakdown.to_html(
+            classes='table table-bordered table-hover table-sm',
+            index=False,
+            border=0
+        )
+        
+        return render_template(
+            'analytics.html',
+            monthly_table=monthly_table,
+            category_table=category_table,
+            trends=trends,
+            current_year=current_year
+        )
+    
+    @app.route('/export/csv')
+    @login_required
+    def export_csv():          
+        # Obtener filtros de la URL
+        filter_type = request.args.get('type')
+        filter_category = request.args.get('category')
+        filter_date_from = request.args.get('date_from')
+        filter_date_to = request.args.get('date_to')
+        
+        # Query base
+        query = Transaction.query.filter_by(user_id=current_user.id)
+        
+        # Aplicar filtros
+        if filter_type:
+            query = query.filter_by(type=filter_type)
+        
+        if filter_category:
+            query = query.filter_by(category=filter_category)
+        
+        if filter_date_from:
+            date_from = datetime.strptime(filter_date_from, '%Y-%m-%d').date()
+            query = query.filter(Transaction.date >= date_from)
+        
+        if filter_date_to:
+            date_to = datetime.strptime(filter_date_to, '%Y-%m-%d').date()
+            query = query.filter(Transaction.date <= date_to)
+        
+        # Ejecutar query
+        transactions = query.order_by(Transaction.date.desc()).all()
+        
+        # Crear CSV en memoria
+        si = StringIO()
+        writer = csv.writer(si)
+        
+        # Encabezados
+        writer.writerow(['Fecha', 'Tipo', 'Categoría', 'Cantidad', 'Descripción'])
+        
+        # Datos
+        for t in transactions:
+            writer.writerow([
+                t.date.strftime('%Y-%m-%d'),
+                'Ingreso' if t.type == 'income' else 'Gasto',
+                t.category,
+                f"{t.amount:.2f}",
+                t.description or ''
+            ])
+        
+        # Crear respuesta HTTP
+        output = make_response(si.getvalue())
+        output.headers["Content-Disposition"] = f"attachment; filename=transacciones_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+        output.headers["Content-type"] = "text/csv; charset=utf-8"
+        
+        return output
+    
+    @app.route('/export/excel')
+    @login_required
+    def export_excel():
+        # Obtener filtros de la URL
+        filter_type = request.args.get('type')
+        filter_category = request.args.get('category')
+        filter_date_from = request.args.get('date_from')
+        filter_date_to = request.args.get('date_to')
+        
+        # Query base
+        query = Transaction.query.filter_by(user_id=current_user.id)
+        
+        # Aplicar filtros
+        if filter_type:
+            query = query.filter_by(type=filter_type)
+        
+        if filter_category:
+            query = query.filter_by(category=filter_category)
+        
+        if filter_date_from:
+            date_from = datetime.strptime(filter_date_from, '%Y-%m-%d').date()
+            query = query.filter(Transaction.date >= date_from)
+        
+        if filter_date_to:
+            date_to = datetime.strptime(filter_date_to, '%Y-%m-%d').date()
+            query = query.filter(Transaction.date <= date_to)
+        
+        # Ejecutar query
+        transactions = query.order_by(Transaction.date.desc()).all()
+        
+        # Crear DataFrame
+        data = []
+        for t in transactions:
+            data.append({
+                'Fecha': t.date.strftime('%Y-%m-%d'),
+                'Tipo': 'Ingreso' if t.type == 'income' else 'Gasto',
+                'Categoría': t.category,
+                'Cantidad': float(t.amount),
+                'Descripción': t.description or ''
+            })
+        
+        df = pd.DataFrame(data)
+        
+        # Crear Excel en memoria
+        output = BytesIO()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            df.to_excel(writer, sheet_name='Transacciones', index=False)
+            
+            # Dar formato a las columnas
+            workbook = writer.book
+            worksheet = writer.sheets['Transacciones']
+            
+            # Ajustar ancho de columnas
+            worksheet.column_dimensions['A'].width = 12  # Fecha
+            worksheet.column_dimensions['B'].width = 10  # Tipo
+            worksheet.column_dimensions['C'].width = 15  # Categoría
+            worksheet.column_dimensions['D'].width = 12  # Cantidad
+            worksheet.column_dimensions['E'].width = 30  # Descripción
+        
+        output.seek(0)
+        
+        # Nombre del archivo con fecha y hora
+        filename = f"transacciones_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+        
+        return send_file(
+            output,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            as_attachment=True,
+            download_name=filename
+        )
+
