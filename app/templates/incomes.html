@@ -41,6 +41,7 @@
           <th>Fecha</th>
           <th>Cantidad (€)</th>
           <th>Descripción</th>
+          <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
@@ -49,10 +50,17 @@
           <td>{{ t.date.strftime('%d/%m/%Y') }}</td>
           <td>{{ "%.2f"|format(t.amount) }}</td>
           <td>{{ t.description or '-' }}</td>
+          <td>
+            <form method="POST" action="{{ url_for('delete_transaction', transaction_id=t.id) }}" style="display: inline;" onsubmit="return confirm('¿Estás seguro de eliminar esta transacción?');">
+              <button type="submit" class="btn btn-danger btn-sm">
+                <i class="fas fa-trash"></i>
+              </button>
+            </form>
+          </td>
         </tr>
         {% else %}
         <tr>
-          <td colspan="3" class="text-center text-muted">No hay ingresos registrados todavía.</td>
+          <td colspan="4" class="text-center text-muted">No hay ingresos registrados todavía.</td>
         </tr>
         {% endfor %}
       </tbody>

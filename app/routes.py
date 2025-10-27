@@ -445,4 +445,30 @@ def init_routes(app):
             as_attachment=True,
             download_name=filename
         )
+    
+    @app.route('/delete/<int:transaction_id>', methods=['POST'])
+    @login_required
+    def delete_transaction(transaction_id):
+        # Buscar la transacción
+        transaction = Transaction.query.get_or_404(transaction_id)
+        
+        # Verificar que pertenece al usuario actual
+        if transaction.user_id != current_user.id:
+            flash('No tienes permiso para eliminar esta transacción.', 'danger')
+            return redirect(url_for('dashboard'))
+        
+        # Guardar tipo para redirigir correctamente
+        transaction_type = transaction.type
+        
+        # Eliminar
+        db.session.delete(transaction)
+        db.session.commit()
+        
+        flash('Transacción eliminada correctamente.', 'success')
+        
+        # Redirigir según el tipo
+        if transaction_type == 'income':
+            return redirect(url_for('incomes'))
+        else:
+            return redirect(url_for('expenses'))
 

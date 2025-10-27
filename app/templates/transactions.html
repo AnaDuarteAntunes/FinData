@@ -1,8 +1,7 @@
 {% extends "index.html" %}
-
 {% block title %}FinData - Transacciones{% endblock %}
-
 {% block content %}
+
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Transacciones</h1>
@@ -94,6 +93,7 @@
                         <th>Cantidad</th>
                         <th>Categoría</th>
                         <th>Descripción</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tfoot class="thead-light">
@@ -103,6 +103,7 @@
                         <th>Cantidad</th>
                         <th>Categoría</th>
                         <th>Descripción</th>
+                        <th>Acciones</th>
                     </tr>
                 </tfoot>
                 <tbody>
@@ -131,6 +132,13 @@
                             {% endif %}
                         </td>
                         <td>{{ transaction.description if transaction.description else '-' }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('delete_transaction', transaction_id=transaction.id) }}" style="display: inline;" onsubmit="return confirm('¿Estás seguro de eliminar esta transacción?');">
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
