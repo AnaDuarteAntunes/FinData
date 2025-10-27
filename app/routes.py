@@ -4,12 +4,14 @@ from . import db, bcrypt
 from .models import User, Transaction
 from flask_login import login_user, logout_user, login_required, current_user
 from .forms import RegistrationForm, LoginForm, TransactionForm
+from .analysis import get_monthly_summary, get_category_breakdown, calculate_trends
 from datetime import datetime
 from sqlalchemy import extract, func
 from datetime import datetime
 from io import BytesIO, StringIO
 import pandas as pd
 import csv
+
 
 def init_routes(app):
     @app.route('/')
@@ -272,14 +274,27 @@ def init_routes(app):
     @app.route('/analytics')
     @login_required
     def analytics():
-        from .analysis import get_monthly_summary, get_category_breakdown, calculate_trends
-        from datetime import datetime
-        
+        # Obtener año seleccionado (por defecto: año actual)
+        selected_year = request.args.get('year', type=int)
         current_year = datetime.now().year
         
-        # Obtener análisis
-        monthly_summary = get_monthly_summary(current_user.id, current_year)
-        category_breakdown = get_category_breakdown(current_user.id, current_year)
+        if selected_year is None:
+            selected_year = current_year
+        
+        # Obtener lista de años disponibles (desde el primer registro)
+        first_transaction = Transaction.query.filter_by(
+            user_id=current_user.id
+        ).order_by(Transaction.date.asc()).first()
+        
+        if first_transaction:
+            first_year = first_transaction.date.year
+            available_years = list(range(first_year, current_year + 1))
+        else:
+            available_years = [current_year]
+        
+        # Obtener análisis del año seleccionado
+        monthly_summary = get_monthly_summary(current_user.id, selected_year)
+        category_breakdown = get_category_breakdown(current_user.id, selected_year)
         trends = calculate_trends(current_user.id, months=6)
         
         # Convertir DataFrames a HTML (con clases Bootstrap)
@@ -300,8 +315,11 @@ def init_routes(app):
             monthly_table=monthly_table,
             category_table=category_table,
             trends=trends,
-            current_year=current_year
+            current_year=current_year,
+            selected_year=selected_year,
+            available_years=available_years
         )
+
     
     @app.route('/export/csv')
     @login_required
