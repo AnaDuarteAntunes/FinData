@@ -239,9 +239,9 @@ findata/
 - [x] Filtrado de transacciones
 
 ### 🔄 Fase 2 - Análisis Avanzado (En progreso)
-- [ ] Integración con Pandas para análisis de datos
-- [ ] Gráficos avanzados con Matplotlib
-- [ ] Exportación de datos a CSV/Excel
+- [x] Integración con Pandas para análisis de datos
+- [x] Gráficos avanzados con Matplotlib
+- [x] Exportación de datos a CSV/Excel
 - [ ] Reportes mensuales/anuales
 
 ### 📅 Fase 3 - Características Premium (Planificado)
