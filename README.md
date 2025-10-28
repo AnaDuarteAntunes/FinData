@@ -44,9 +44,14 @@ Como estudiante de DAM, quería crear algo que:
 
 ---
 
-<br>
 
-![Image](https://github.com/user-attachments/assets/9dc80f48-4e0d-44ec-89d8-567e909c1c14)
+## Dashboard
+
+![Image](https://github.com/user-attachments/assets/0bf4aa79-9a22-467d-9e0b-2c9e7c7c20fd) <br>
+
+
+## Gestiones
+![Image](https://github.com/user-attachments/assets/4b552acb-f285-455f-8ea4-9be4ff910c9f)<br>
 
 <br>
 
