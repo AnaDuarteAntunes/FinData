@@ -1,5 +1,5 @@
 # routes.py
-from flask import render_template, redirect, url_for, flash, request, send_file, make_response
+from flask import render_template, redirect, url_for, flash, request, send_file, make_response, session
 from . import db, bcrypt
 from .models import User, Transaction
 from flask_login import login_user, logout_user, login_required, current_user
