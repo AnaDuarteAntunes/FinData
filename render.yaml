@@ -1,0 +1,20 @@
+services:
+  # 🌐 Configuración del servidor web
+  - type: web
+    name: findata  
+    env: python
+    buildCommand: "pip install -r requirements.txt"  # Instala dependencias
+    startCommand: "gunicorn run:app"  # Inicia el servidor
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0  # Cambia si usas otra versión de Python
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true  # Render genera una clave secreta automáticamente
+
+databases:
+  # 🗄️ Configuración de PostgreSQL
+  - name: findata-db
+    databaseName: findata
+    user: findata_user

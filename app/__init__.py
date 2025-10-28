@@ -11,7 +11,21 @@ bcrypt = Bcrypt()
 
 def create_app():
     app = Flask(__name__, instance_relative_config=True)
-    app.config.from_object('instance.config.Config')
+    
+    # 🔧 CAMBIO 1: Cargar configuración según entorno
+    # Si existe instance/config.py (local), lo usa
+    # Si no (producción), usa variables de entorno
+    try:
+        app.config.from_object('instance.config.Config')
+    except:
+        # Configuración para producción (Render)
+        app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'clave-super-secreta-por-defecto')
+        app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///findata.db')
+        app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+    # 🔧 CAMBIO 2: Fix para Render (PostgreSQL usa postgres:// pero SQLAlchemy necesita postgresql://)
+    if app.config['SQLALCHEMY_DATABASE_URI'] and app.config['SQLALCHEMY_DATABASE_URI'].startswith("postgres://"):
+        app.config['SQLALCHEMY_DATABASE_URI'] = app.config['SQLALCHEMY_DATABASE_URI'].replace("postgres://", "postgresql://", 1)
 
     # Inicializamos extensiones con la app
     db.init_app(app)
