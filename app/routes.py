@@ -4,8 +4,7 @@ from . import db, bcrypt
 from .models import User, Transaction
 from flask_login import login_user, logout_user, login_required, current_user
 from .forms import RegistrationForm, LoginForm, TransactionForm
-from .analysis import get_monthly_summary, get_category_breakdown, calculate_trends
-from datetime import datetime
+from .analysis import get_monthly_summary, get_category_breakdown, calculate_trends, generate_charts
 from sqlalchemy import extract, func
 from datetime import datetime
 from io import BytesIO, StringIO
@@ -296,6 +295,9 @@ def init_routes(app):
         monthly_summary = get_monthly_summary(current_user.id, selected_year)
         category_breakdown = get_category_breakdown(current_user.id, selected_year)
         trends = calculate_trends(current_user.id, months=6)
+
+        # Generar gráficos con Matplotlib
+        charts = generate_charts(current_user.id, selected_year)
         
         # Convertir DataFrames a HTML (con clases Bootstrap)
         monthly_table = monthly_summary.to_html(
@@ -317,7 +319,8 @@ def init_routes(app):
             trends=trends,
             current_year=current_year,
             selected_year=selected_year,
-            available_years=available_years
+            available_years=available_years,
+            charts=charts
         )
 
     
