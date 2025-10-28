@@ -12,9 +12,17 @@ import pandas as pd
 import csv
 
 
+
 def init_routes(app):
     @app.route('/')
-    def home():
+    #def home():
+    #    return redirect(url_for('dashboard'))
+    def index():
+        # Auto-login del usuario demo
+        demo_user = User.query.filter_by(email='ljm@mail.com').first()
+        if demo_user and not current_user.is_authenticated:
+            login_user(demo_user)
+            session['is_demo'] = True  # Marcar que es sesión demo
         return redirect(url_for('dashboard'))
 
     @app.route('/register', methods=['GET', 'POST'])
@@ -172,8 +180,12 @@ def init_routes(app):
     @login_required
     def expenses():
         form = TransactionForm()
-        #if form.validate_on_submit() and form.type.data == 'expense':
         if form.validate_on_submit():
+            # Bloquear guardado en modo demo
+            if session.get('is_demo'):
+                flash('Gasto añadido temporalmente (no se guardó en demo)', 'info')
+                return redirect(url_for('dashboard'))
+            
             transaction = Transaction(
                 date=form.date.data,
                 amount=form.amount.data,
@@ -205,8 +217,12 @@ def init_routes(app):
     @login_required
     def incomes():
         form = TransactionForm()
-        #if form.validate_on_submit() and form.type.data == 'income':
         if form.validate_on_submit():
+            # Bloquear guardado en modo demo
+            if session.get('is_demo'):
+                flash('Ingreso añadido temporalmente (no se guardó en demo)', 'info')
+                return redirect(url_for('dashboard'))
+            
             transaction = Transaction(
                 date=form.date.data,
                 amount=form.amount.data,
@@ -452,6 +468,11 @@ def init_routes(app):
     @app.route('/delete/<int:transaction_id>', methods=['POST'])
     @login_required
     def delete_transaction(transaction_id):
+        # Bloquear eliminación en modo demo
+        if session.get('is_demo'):
+            flash('En modo demo los cambios no se guardan', 'warning')
+            return redirect(request.referrer or url_for('dashboard'))
+        
         # Buscar la transacción
         transaction = Transaction.query.get_or_404(transaction_id)
         

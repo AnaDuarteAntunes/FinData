@@ -2,6 +2,16 @@
 {% block title %}Dashboard - FinData{% endblock %}
 {% block content %}
 
+{% if session.get('is_demo') %}
+<div class="alert alert-info alert-dismissible fade show" role="alert">
+    <strong>🎭 Modo Demostración</strong> - Estás viendo datos de demostración Los cambios no se guardarán.
+    <a href="{{ url_for('logout') }}" class="alert-link">Crear cuenta real</a>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endif %}
+
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
