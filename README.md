@@ -1,16 +1,18 @@
 # 💰 FinData - Gestor de Finanzas Personales
 
-![Python](https://img.shields.io/badge/Python-3.12-blue.svg)
-![Flask](https://img.shields.io/badge/Flask-3.0-green.svg)
-![SQLite](https://img.shields.io/badge/SQLite-3-lightgrey.svg)
+[![Demo en Vivo](https://img.shields.io/badge/Demo-En%20Vivo-success)](https://findata-r08l.onrender.com)
+[![Python](https://img.shields.io/badge/Python-3.11-blue)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-3.0-lightgrey)](https://flask.palletsprojects.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791)](https://www.postgresql.org/)
 
 
 > Aplicación web para la gestión y análisis de finanzas personales con visualización de datos y análisis estadísticos.
 
 <br>
 
-Proyecto desarrollado como estudiante de Desarrollo de Aplicaciones Multiplataforma. Creado para uso personal y como parte de mi portafolio de desarrollo.
-<br>
+FinData es un sistema de gestión financiera personal que permite registrar ingresos y gastos, visualizar estadísticas en tiempo real, y exportar reportes detallados. Diseñada con una interfaz intuitiva..
+
+🎭 Modo Demo: Al acceder a la aplicación, podrás explorar todas las funcionalidades con datos ficticios precargados sin necesidad de registro<br>
 <br>
 
 ---
@@ -32,15 +34,39 @@ Como estudiante de DAM, quería crear algo que:
 
 <br>
 
-## 📋 Descripción
+## ✨ Características Principales
 
-**FinData** es una aplicación web moderna que permite a los usuarios:
+### 📊 Dashboard Interactivo
+- Resumen de saldo actual, ingresos y gastos totales
+- Gráficos de área para evolución temporal
+- Gráfico circular de distribución por categorías
+- Visualización de últimas 5 transacciones
 
-- ✅ Registrar ingresos y gastos de forma sencilla
-- 📊 Visualizar datos mediante gráficos dinámicos e interactivos
-- 🔍 Filtrar y analizar transacciones por categoría, tipo y fecha
-- 📈 Calcular automáticamente balances y tasas de ahorro
-- 🔐 Gestión segura de usuarios con autenticación
+### 💸 Gestión de Transacciones
+- Registro de ingresos y gastos con categorización
+- Filtros por tipo, categoría y rango de fechas
+- Tabla interactiva con búsqueda y ordenamiento
+- Eliminación de registros con confirmación
+
+### 📈 Análisis Avanzado
+- Gráficos estadísticos con Matplotlib y Seaborn
+- Comparativa mensual de ingresos vs gastos
+- Distribución porcentual por categorías
+- Top 5 de gastos más frecuentes
+- Filtrado por año para análisis histórico
+
+### 📥 Exportación de Datos
+- Descarga en formato CSV
+- Descarga en formato Excel (XLSX)
+- Filtros aplicables antes de exportar
+- Datos listos para análisis externo
+
+### 🔐 Sistema de Autenticación
+- Registro de usuarios con validación
+- Login seguro con contraseñas hasheadas (Bcrypt)
+- Sesiones persistentes
+- Modo demo sin necesidad de registro
+
 
 ---
 
@@ -57,60 +83,58 @@ Como estudiante de DAM, quería crear algo que:
 
 ---
 
-## 🚀 Características Principales
-
-### 📊 Dashboard Interactivo
-- Tarjetas resumen con totales de ingresos, gastos y balance
-- Cálculo automático de tasa de ahorro
-- Gráficos de evolución temporal (Chart.js)
-- Distribución de gastos por categoría
-
-### 💸 Gestión de Transacciones
-- Formularios intuitivos para registrar ingresos y gastos
-- Categorización de gastos (Alimentación, Transporte, Vivienda, etc.)
-- Historial completo con búsqueda y ordenación (DataTables)
-- Filtros avanzados por tipo, categoría y rango de fechas
-
-### 🔐 Autenticación y Seguridad
-- Sistema de registro y login seguro
-- Contraseñas hasheadas con bcrypt
-- Sesiones de usuario con Flask-Login
-- Datos privados por usuario
-
----
-
 ## 🛠️ Tecnologías Utilizadas
 
 ### Backend
-- **Flask** - Framework web Python
+- **Flask 3.0** - Framework web
 - **SQLAlchemy** - ORM para base de datos
-- **Flask-Login** - Gestión de sesiones de usuario
+- **Flask-Login** - Gestión de sesiones
 - **Flask-Bcrypt** - Encriptación de contraseñas
-- **WTForms** - Validación de formularios
+- **Pandas** - Análisis de datos
+- **Matplotlib + Seaborn** - Visualizaciones estadísticas
 
 ### Frontend
 - **HTML5 / CSS3** - Estructura y estilos
 - **Bootstrap 4** - Framework CSS responsive
-- **Jinja2** - Motor de plantillas
-- **SB Admin 2** - Template de administración
+- **SB Admin 2** - Plantilla de administración
 - **Chart.js** - Gráficos interactivos
-- **DataTables** - Tablas avanzadas con búsqueda/filtrado
+- **DataTables** - Tablas con funcionalidades avanzadas
+- **Jinja2** - Motor de plantillas
 
 ### Base de Datos
 - **SQLite** - Base de datos local
+- **PostgreSQL** - Base de datos en producción
 
-### Análisis de Datos (Próximamente)
+### Análisis de Datos 
 - **Pandas** - Manipulación y análisis de datos
 - **Matplotlib** - Visualización estadística
-- **Power BI** - Dashboards avanzados
+- **Power BI** - Dashboards avanzados (Próximamente)
+
+### Despliegue
+- **Render** - Hosting de aplicación y base de datos
+- **Gunicorn** - Servidor WSGI para producción
+- **GitHub Actions** - CI/CD automático
 
 ---
 
-## 📦 Instalación
+## 🚀 Demo en Vivo
+
+Accede a la aplicación desplegada: **[https://findata-r08l.onrender.com](https://findata-r08l.onrender.com)**
+
+Al entrar, verás automáticamente el dashboard con datos de demostración. Puedes:
+- ✅ Navegar por todas las secciones
+- ✅ Ver gráficos y estadísticas
+- ✅ Probar filtros y búsquedas
+- ✅ Exportar datos en CSV/Excel
+- ⚠️ Los cambios no se guardarán (modo demo)
+
+Si deseas crear tu propia cuenta con datos reales, haz clic en "Crear cuenta real" desde el banner superior.
+
+## 📦 Instalación Local
 
 ### Requisitos Previos
-- Python 3.12 o superior
-- pip (gestor de paquetes de Python)
+- Python 3.11 o superior
+- PostgreSQL (opcional, usa SQLite por defecto en local)
 - Git
 
 ### Pasos de Instalación
@@ -124,31 +148,25 @@ cd findata
 2. **Crear entorno virtual**
 ```bash
 python -m venv venv
+source venv/bin/activate  # En Windows: venv\Scripts\activate
 ```
 
-3. **Activar entorno virtual**
-- **Windows:**
-```bash
-venv\Scripts\activate
-```
-- **Linux/Mac:**
-```bash
-source venv/bin/activate
-```
-
-4. **Instalar dependencias**
+3. **Instalar dependencias**
 ```bash
 pip install -r requirements.txt
 ```
 
-5. **Configurar base de datos**
+4. **Configurar variables de entorno**
+Crea un archivo `.env` en la raíz del proyecto:
+```env
+SECRET_KEY=tu_clave_secreta_aqui
+FLASK_ENV=development
+DATABASE_URL=sqlite:///findata.db  # O tu URL de PostgreSQL
+```
+
+5. **Inicializar la base de datos**
 ```bash
-python
->>> from app import db, create_app
->>> app = create_app()
->>> with app.app_context():
-...     db.create_all()
->>> exit()
+flask db upgrade
 ```
 
 6. **Ejecutar la aplicación**
@@ -156,37 +174,35 @@ python
 python run.py
 ```
 
-7. **Acceder a la aplicación**
-Abre tu navegador en: `http://localhost:5000`
+La aplicación estará disponible en `http://localhost:5000`
 
 ---
 
-## 📁 Estructura del Proyecto
+## 🗂️ Estructura del Proyecto
 
 ```
 findata/
 ├── app/
-│   ├── __init__.py          # Inicialización de Flask
-│   ├── models.py            # Modelos de base de datos
-│   ├── forms.py             # Formularios WTForms
-│   ├── routes.py            # Rutas y controladores
-│   ├── static/              # Archivos estáticos (CSS, JS, imágenes)
-│   │   ├── css/
-│   │   ├── js/
-│   │   ├── vendor/
-│   │   └── img/
-│   └── templates/           # Templates HTML (Jinja2)
-│       ├── index.html       # Template base
-│       ├── dashboard.html   # Dashboard principal
-│       ├── incomes.html     # Gestión de ingresos
-│       ├── expenses.html    # Gestión de gastos
-│       ├── transactions.html # Historial completo
-│       ├── login.html       # Página de login
-│       └── register.html    # Página de registro
-├── instance/               # Base de datos SQLite
-├── run.py                   # Punto de entrada de la aplicación
-├── requirements.txt         # Dependencias del proyecto
-└── README.md               # Este archivo
+│   ├── __init__.py           # Configuración de Flask
+│   ├── models.py             # Modelos de base de datos
+│   ├── routes.py             # Rutas y lógica de vistas
+│   ├── forms.py              # Formularios con WTForms
+│   ├── analysis.py           # Funciones de análisis de datos
+│   ├── templates/            # Plantillas HTML
+│   │   ├── index.html
+│   │   ├── dashboard.html
+│   │   ├── transactions.html
+│   │   ├── analytics.html
+│   │   └── ...
+│   └── static/               # Archivos CSS, JS e imágenes
+│       ├── css/
+│       ├── js/
+│       └── vendor/
+├── migrations/               # Migraciones de base de datos
+├── run.py                    # Punto de entrada de la aplicación
+├── requirements.txt          # Dependencias del proyecto
+├── render.yaml               # Configuración de Render
+└── README.md                 # Este archivo
 ```
 
 ---
@@ -232,35 +248,28 @@ findata/
 - description: String
 - created_at: DateTime
 ```
+## 🔒 Seguridad
+
+- Contraseñas encriptadas con Bcrypt
+- Protección CSRF en formularios
+- Validación de datos en servidor
+- Sesiones seguras con Flask-Login
+- Variables de entorno para datos sensibles
 
 ---
+## 🚀 Despliegue en Render
 
-## 🚧 Roadmap
+Este proyecto está configurado para desplegarse automáticamente en Render:
 
-### ✅ Fase 1 - Funcionalidad Básica (Completada)
-- [x] Sistema de autenticación
-- [x] CRUD de transacciones
-- [x] Dashboard con estadísticas básicas
-- [x] Filtrado de transacciones
-
-### 🔄 Fase 2 - Análisis Avanzado (En progreso)
-- [x] Integración con Pandas para análisis de datos
-- [x] Gráficos avanzados con Matplotlib
-- [x] Exportación de datos a CSV/Excel
-- [ ] Reportes mensuales/anuales
-
-### 📅 Fase 3 - Características Premium (Planificado)
-- [ ] Integración con Power BI
-- [ ] Predicciones de gastos con Machine Learning
-- [ ] Presupuestos y alertas
-- [ ] Categorías personalizadas
-- [ ] Objetivos de ahorro
+1. Conecta tu repositorio de GitHub a Render
+2. Configura las variables de entorno necesarias
+3. Render detectará el `render.yaml` y desplegará automáticamente
+4. Cada push a `main` actualizará la aplicación
 
 ---
 
 ## 🤝 Contribuciones
-
-Las contribuciones son bienvenidas. Por favor:
+Este proyecto es parte de mi portafolio como estudiante de DAM. Si encuentras algún bug o tienes sugerencias de mejora, siéntete libre de abrir un issue o pull request.
 
 1. Haz fork del proyecto
 2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
@@ -274,23 +283,34 @@ Las contribuciones son bienvenidas. Por favor:
 ## 📸 Capturas de Pantalla
 
 ### Dashboard
-<img width="1897" height="865" alt="findata_dashboard" src="https://github.com/user-attachments/assets/b1e44b42-1d91-4b73-9018-10ea7ce21ebe" />
+<img width="1890" height="871" alt="findata_dashboard" src="https://github.com/user-attachments/assets/e951ff62-8699-4a24-9624-8e6027b8c8b7" />
+
+
+### Análisis
+<img width="1877" height="857" alt="findata_analisis1" src="https://github.com/user-attachments/assets/38ce290b-10d9-4520-adeb-f9de0ac962a0" />
+<img width="1638" height="872" alt="findata_analisis2" src="https://github.com/user-attachments/assets/8e817641-f6a8-433e-abc0-5d69fdaeca5c" />
+
+### Gestión de Ingresos
+<img width="1900" height="876" alt="findata_ingresos" src="https://github.com/user-attachments/assets/5f1f5b65-35c4-4d5b-a4fb-640c9bc45311" />
 
 
 ### Gestión de Gastos
-<img width="1865" height="874" alt="findata_gastos" src="https://github.com/user-attachments/assets/5e1004b2-ede8-4ca9-8154-ef71d210206e" />
+<img width="1901" height="867" alt="findata_gastos" src="https://github.com/user-attachments/assets/852f845c-156b-4b00-ab9f-01d9cc9d1bd2" />
+
 
 ### Historial de Transacciones
-<img width="1893" height="877" alt="findata_tabla" src="https://github.com/user-attachments/assets/c65b01d1-02cc-4006-af75-5a5e155dc729" />
+<img width="1886" height="865" alt="findata_tabla" src="https://github.com/user-attachments/assets/8173cdf4-73c8-4155-a402-3153d16e1e37" />
+
 
 ---
 
 ## 🙏 Agradecimientos
 
-- [SB Admin 2](https://startbootstrap.com/theme/sb-admin-2) - Template de administración
+- [SB Admin 2](https://startbootstrap.com/theme/sb-admin-2) por la plantilla de administración
 - [Chart.js](https://www.chartjs.org/) - Biblioteca de gráficos
 - [DataTables](https://datatables.net/) - Plugin de tablas interactivas
 - [Flask](https://flask.palletsprojects.com/) - Framework web
+- [Render](https://render.com/) por el hosting gratuito
 
 ---
 
