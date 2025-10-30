@@ -54,6 +54,23 @@ def init_routes(app):
     def logout():
         logout_user()
         return redirect(url_for('login'))
+    
+    @app.route('/demo')
+    def demo_mode():
+        # Si ya está logueado, cerrar sesión primero
+        if current_user.is_authenticated:
+            logout_user()
+        
+        # Auto-login del usuario demo
+        demo_user = User.query.filter_by(email='ljm@mail.com').first()
+        if demo_user:
+            login_user(demo_user)
+            session['is_demo'] = True
+            flash('Has entrado en modo demostración', 'info')
+        else:
+            flash('Usuario demo no disponible', 'danger')
+        
+        return redirect(url_for('dashboard'))
 
     # ------------------- PÁGINAS PRINCIPALES -------------------
 
