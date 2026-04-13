@@ -48,3 +48,8 @@ Thumbs.db
 # 📊 Archivos temporales
 *.log
 *.tmp
+
+# 🔧 Scripts de mantenimiento local
+import_csv.py
+demo_transactions.csv
+migrate_data.py
