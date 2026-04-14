@@ -5,7 +5,7 @@ from .models import User, Transaction
 from flask_login import login_user, logout_user, login_required, current_user
 from .forms import RegistrationForm, LoginForm, TransactionForm
 from .analysis import get_monthly_summary, get_category_breakdown, calculate_trends, generate_charts
-from sqlalchemy import extract, func
+from sqlalchemy import extract, func, text
 from datetime import datetime
 from io import BytesIO, StringIO
 import pandas as pd
@@ -24,6 +24,20 @@ def init_routes(app):
             login_user(demo_user)
             session['is_demo'] = True  # Marcar que es sesión demo
         return redirect(url_for('dashboard'))
+        
+    #debug
+    @app.route('/debug-db')
+    def debug_db():
+        result = db.session.execute(
+            text("SELECT current_database(), current_user")
+        ).fetchone()
+
+        return {
+            "sqlalchemy_uri": app.config['SQLALCHEMY_DATABASE_URI'],
+            "current_database": result[0],
+            "current_user": result[1]
+        }
+    #final de debug
 
     @app.route('/register', methods=['GET', 'POST'])
     def register():
