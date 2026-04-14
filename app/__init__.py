@@ -12,18 +12,26 @@ bcrypt = Bcrypt()
 def create_app():
     app = Flask(__name__, instance_relative_config=True)
     
-    # 馃敡 CAMBIO 1: Cargar configuraci贸n seg煤n entorno
+    #  CAMBIO 1: Cargar configuraci贸n seg煤n entorno
     # Si existe instance/config.py (local), lo usa
     # Si no (producci贸n), usa variables de entorno
     try:
         app.config.from_object('instance.config.Config')
-    except:
-        # Configuraci贸n para producci贸n (Render)
+    except ModuleNotFoundError:
+        # CONFIGURACIóN PRODUCCIóN (Render)
+        database_url = os.environ.get('DATABASE_URL')
+
+        if not database_url:
+            raise RuntimeError("? DATABASE_URL no está configurada en Render")
+
+        if database_url.startswith("postgres://"):
+            database_url = database_url.replace("postgres://", "postgresql://", 1)
+
         app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'clave-super-secreta-por-defecto')
-        app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///findata.db')
+        app.config['SQLALCHEMY_DATABASE_URI'] = database_url
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    # 馃敡 CAMBIO 2: Fix para Render (PostgreSQL usa postgres:// pero SQLAlchemy necesita postgresql://)
+    #  CAMBIO 2: Fix para Render (PostgreSQL usa postgres:// pero SQLAlchemy necesita postgresql://)
     if app.config['SQLALCHEMY_DATABASE_URI'] and app.config['SQLALCHEMY_DATABASE_URI'].startswith("postgres://"):
         app.config['SQLALCHEMY_DATABASE_URI'] = app.config['SQLALCHEMY_DATABASE_URI'].replace("postgres://", "postgresql://", 1)
 
