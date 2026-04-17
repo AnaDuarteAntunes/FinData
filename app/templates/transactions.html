@@ -75,6 +75,38 @@
     </div>
 </div>
 
+<!-- Botones de Exportación -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">
+            <i class="fas fa-download"></i> Exportar Datos
+        </h6>
+    </div>
+    <div class="card-body">
+        <p class="text-gray-600 mb-4">Descarga tus transacciones con los filtros aplicados</p>
+        
+        <div class="text-center">
+            <a href="{{ url_for('export_csv', type=request.args.get('type', ''), category=request.args.get('category', ''), date_from=request.args.get('date_from', ''), date_to=request.args.get('date_to', '')) }}" class="btn btn-success btn-icon-split mr-3 mb-2">
+                <span class="icon text-white-50">
+                    <i class="fas fa-file-csv"></i>
+                </span>
+                <span class="text">Exportar CSV</span>
+            </a>
+            
+            <a href="{{ url_for('export_excel', type=request.args.get('type', ''), category=request.args.get('category', ''), date_from=request.args.get('date_from', ''), date_to=request.args.get('date_to', '')) }}" class="btn btn-primary btn-icon-split mb-2">
+                <span class="icon text-white-50">
+                    <i class="fas fa-file-excel"></i>
+                </span>
+                <span class="text">Exportar Excel</span>
+            </a>
+        </div>
+        
+        <div class="text-muted small mt-3 text-center">
+            <i class="fas fa-info-circle"></i> Se exportarán todas las transacciones que coincidan con los filtros actuales.
+        </div>
+    </div>
+</div>
+
 <!-- Tabla de Transacciones -->
 <div class="card shadow mb-4">
     <div class="card-header py-3">
