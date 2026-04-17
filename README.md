@@ -47,6 +47,7 @@ Como estudiante de DAM, quería crear algo que:
 - Filtros por tipo, categoría y rango de fechas
 - Tabla interactiva con búsqueda y ordenamiento
 - Eliminación de registros con confirmación
+- **Exportación de datos filtrados** en CSV o Excel
 
 ### 📈 Análisis Avanzado
 - Gráficos estadísticos con Matplotlib y Seaborn
@@ -54,12 +55,6 @@ Como estudiante de DAM, quería crear algo que:
 - Distribución porcentual por categorías
 - Top 5 de gastos más frecuentes
 - Filtrado por año para análisis histórico
-
-### 📥 Exportación de Datos
-- Descarga en formato CSV
-- Descarga en formato Excel (XLSX)
-- Filtros aplicables antes de exportar
-- Datos listos para análisis externo
 
 ### 🔐 Sistema de Autenticación
 - Registro de usuarios con validación
